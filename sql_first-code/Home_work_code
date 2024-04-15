@@ -1,0 +1,577 @@
+SQL SELEcT STATEMENT(TOP,DISTINCT , COUNT,AS,MAX MIN AVG)
+
+
+SELECT TOP 5 *
+From dbo.EmployeeDemographic
+
+SELECT *
+From dbo.EmployeeDemographic
+
+SELECT FirstName, LastName
+From dbo.EmployeeDemographic
+
+SELECT TOP 5 *
+From dbo.EmployeeDemographic
+
+DISTINCT
+SELECT distinct(EmployeeID)
+From dbo.EmployeeDemographic   (DISTINCT Mmeans we want the unique values in a specific column)
+
+SELECT LastName
+From dbo.EmployeeDemographic   (it gives you all the last name in the column)
+
+COUNT
+SELECT count(LastName)
+From dbo.EmployeeDemographic   (it only count the number of the lastName for you. example 10. without a column)
+
+AS
+SELECT count(LastName) as LastNameCount
+From dbo.EmployeeDemographic   (Naming the column using AS)
+
+
+WHERE STATEMENT  (<>, <, >, =, AND, OR, LIKE, NULL, NOT NULL, IN)
+
+select *
+FROM dbo.EmployeeDemographic 
+WHERE FirstName='Jim'         (It brings out all thr first names that is Jim in the table)
+
+
+select *
+FROM dbo.EmployeeDemographic 
+WHERE FirstName<>'Jim'        (It brings out all the first names eccept Jim)
+
+select *
+FROM dbo.EmployeeDemographic 
+WHERE Age >30                 (It brings out all the ages greater than 30 in the table)
+
+
+select *
+FROM dbo.EmployeeDemographic 
+WHERE Age >=30                (This includes 30)
+
+
+select *
+FROM dbo.EmployeeDemographic 
+WHERE Age >=30 AND Gender = 'Male'      ( It brings out male whose age is greater than and equal to 30)
+
+
+select *
+FROM dbo.EmployeeDemographic 
+WHERE Age >=30 OR Gender = 'Male'         (Here, even one crateria is right, it will be included)
+
+
+select *
+FROM dbo.EmployeeDemographic 
+WHERE LastName like 's%'                ( All last names that start with S)
+
+
+select *
+FROM dbo.EmployeeDemographic 
+WHERE LastName like '%s%'              ( Last name that has S anywhere)
+
+
+select *
+FROM dbo.EmployeeDemographic 
+WHERE LastName like 's%o%'           (It has S in the begining and somewhere inbetween it has O )
+
+
+select *
+FROM dbo.EmployeeDemographic 
+WHERE LastName like 's%ott%'      ( It brings out the last name Scott)
+
+
+select *
+FROM dbo.EmployeeDemographic 
+WHERE LastName like 's%c%ott%'   ( Bring out Scot)
+
+
+select *
+FROM dbo.EmployeeDemographic 
+WHERE FirstName IN (Jim , Micheal)   ( Acondence way of saying = for multiple things) 
+
+
+GROUP BY, ODER BY
+
+select Gender , Age, count(Gender)
+FROM dbo.EmployeeDemographic 
+Group by Gender,Age
+(It brings out a distinct count of gender with its age. note that, this create another colum field of the gender count)
+
+
+select Gender , Age, count(Gender) AS CountGender
+FROM dbo.EmployeeDemographic 
+Group by Gender, Age 
+( Naming the new column as CountGender)
+
+select Gender , Age, count(Gender) AS CountGender
+FROM dbo.EmployeeDemographic 
+where Age >31
+Group by Gender, Age             
+(bringing out the distinct count of gender with age greater than 31)
+
+select Gender , Age, count(Gender) AS CountGender
+FROM dbo.EmployeeDemographic 
+Group by Gender, Age 
+Oder by age
+(oder by arrange the field in descending or ascending oder)
+
+INNER JOINS, FULL/LEFT/RIGHT OUTER JOINS
+IT COMBINE TWO TABELS BASE ON A COMMON CULUMN
+select*
+from dbo.EmployeeDemographic
+INNER JOIN dbo.EMPLOYEESALARY
+on dbo.EmployeeDemographic.EmployeeID = dbo.EMPLOYEESALARY.EmployeeID
+( What we is both tabels combined . it only show everything that is the same. does not show the rest that are not similar in both tables)
+
+select*
+from dbo.EmployeeDemographic
+full outer JOIN dbo.EMPLOYEESALARY
+on dbo.EmployeeDemographic.EmployeeID = dbo.EMPLOYEESALARY.EmployeeID
+
+(here we see that, where the employeeid does not exit, all the information field is going to be null.what is saying here is, we are going to show table A and table B Rgardles of if it has a match based on what we are joining them)
+
+
+select*
+from dbo.EmployeeDemographic
+left outer JOIN dbo.EMPLOYEESALARY
+on dbo.EmployeeDemographic.EmployeeID = dbo.EMPLOYEESALARY.EmployeeID
+
+(This is going to take everything in the left table that is overlaping but if it is only in the RIGHT table, we do not want it)
+LEFT TABLE IS THE FROM TABLE(the first one)
+
+select*
+from dbo.EmployeeDemographic
+Right outer JOIN dbo.EMPLOYEESALARY
+on dbo.EmployeeDemographic.EmployeeID = dbo.EMPLOYEESALARY.EmployeeID
+
+(is going to show everythin in the employeesalary table and if it doesnt much with employeedemographic table, is giong to give out NULL)
+
+
+select dbo.EmployeeDemographic, FirstName,LastName,jobtitle, salary
+from dbo.EmployeeDemographic
+INNER JOIN dbo.EMPLOYEESALARY
+on dbo.EmployeeDemographic.EmployeeID = dbo.EMPLOYEESALARY.EmployeeID
+(You can also select the field you want to show. dont forget to specify which employeeid you will want to use
+
+
+
+LETS LOOK AT A USE CASE FOR THESE JOINS
+Lets say robert califonia is presuring micheal scott to meet his quarterly qouta and micheal scott is almost there, he needs like a thousand more dollars and he came up with the genius idea to deduct pay for the highest paid employee at his branch beside himself.
+So how does he go about doing this. like identifying the person that makes the most money.
+
+we can use SQL to solve this problem.
+first use Full outer join to look at everything.
+
+We need to think about what information we need to know to get the information micheal scott need
+
+In this case, we need EMPLOYEEID, FIRSTNAME, LASTNAME SALARY to know who is the highest paid employee
+
+Now lets do inner join because we really only want to look at the employeeid's where we know what their names is and their salaries owes
+And let do it base on employeedemographic table . it realy doesnt mater which table for inner join but lets just use it
+
+select dbo.EmployeeDemographic, FirstName,LastName,jobtitle, salary
+from dbo.EmployeeDemographic
+INNER JOIN dbo.EMPLOYEESALARY
+on dbo.EmployeeDemographic.EmployeeID = dbo.EMPLOYEESALARY.EmployeeID
+
+Since micheal scott salary is part of the table, we want to do it where it is not micheal scott because micheal doesnt want to take his own money. He wants to take away his employees money so let add WHERE clause or condition
+
+select dbo.EmployeeDemographic, FirstName,LastName,jobtitle, salary
+from dbo.EmployeeDemographic
+INNER JOIN dbo.EMPLOYEESALARY
+on dbo.EmployeeDemographic.EmployeeID = dbo.EMPLOYEESALARY.EmployeeID
+WHERE Firstname <> 'micheal'
+
+Now we will want to arrange the salaries in order to be able to easily identify the highest paying. to acheive this, we use ORDER
+
+select dbo.EmployeeDemographic, FirstName,LastName,jobtitle, salary
+from dbo.EmployeeDemographic
+INNER JOIN dbo.EMPLOYEESALARY
+on dbo.EmployeeDemographic.EmployeeID = dbo.EMPLOYEESALARY.EmployeeID
+WHERE Firstname <> 'micheal'
+ORDER BY salary DESC
+
+LESTS LOOK AT SECOND USE CASE
+Malone who is an accountant thinks he may have made a mistake at the average salary for our sales men
+
+All we are going to need is the jobtitle and salary
+
+select jobtitle, salary
+from dbo.EmployeeDemographic
+INNER JOIN dbo.EMPLOYEESALARY
+on dbo.EmployeeDemographic.EmployeeID = dbo.EMPLOYEESALARY.EmployeeID
+where jobtitle= 'salesman'
+
+since we are looking for average we get this
+
+select jobtitle, salary AVG(salary)
+from dbo.EmployeeDemographic
+INNER JOIN dbo.EMPLOYEESALARY
+on dbo.EmployeeDemographic.EmployeeID = dbo.EMPLOYEESALARY.EmployeeID
+
+Since we are going to do group by we get rid of salary selected
+
+select jobtitle, AVG(salary)
+from dbo.EmployeeDemographic
+INNER JOIN dbo.EMPLOYEESALARY
+on dbo.EmployeeDemographic.EmployeeID = dbo.EMPLOYEESALARY.EmployeeID
+where jobtitle= 'salesman'
+GROUP BY jobtitle
+
+
+UNION
+IT COMBILE TWO TABELS
+
+IT NEEDS TO HAVE THE EXACT SAME COLUMN
+ 
+Select *
+from dbo.EmployeeDemographic
+UNION
+select *
+from dbo.EmployeeSomthing
+
+Here, you will see employeedemographic columns follow by the salary the table. This worked because both tables hase the same column just differnt informations .It does not repeat any duplication.
+
+Select *
+from dbo.EmployeeDemographic
+UNION ALL
+select *
+from dbo.EmployeeSomthing
+
+This shows all the duplications it doesnt treat it as distinct
+
+
+CASE STATEMENT
+
+SELECT firstname, lastname, age
+case 
+WHEN age>30 THEN 'OLD'
+ELSE 'YOUNG'
+END
+FROM dbo.Demographic
+WHERE age is NOT NULL
+ODER BY Age
+This  create new column. and if they are over 30 ,is giving OLD and if they are not older than 30, they are giving YOUNG
+
+
+MULTIPLE CASE
+
+SELECT firstname, lastname, age
+case 
+WHEN age>30 THEN 'OLD'
+WHEN age  BETWEEN 27 AND 30 THEN 'YOUNG
+
+ELSE 'BABY'
+END
+FROM dbo.Demographic
+WHERE age is NOT NULL
+ODER BY Age
+
+
+USE CASE FOR CASE STATEMENT
+
+INcase the business is doing well and we want to increase employee salary.
+
+The important information needed is (EMPLOYEEID, NAME, JOB TITLE AND SALARY) SLet pull them out by uing join
+
+SELECT FirstName, LastName, JobTitle, Salary,
+CASE 
+WHEN JobTitle= 'Salesman' THEN Salary + (Salary *.10)
+WHEN JobTitle= 'Accountanat' THEN Salary + (Salary *.05)
+WHEN JobTitle= 'HR' THEN Salary + (Salary *.000001)
+ELSE Salary + (Salary * 0.3)
+END AS SalaryAfterRaise
+FROM dbo.EmployeeDemographic
+JOIN dbo.EmployeeSalary
+ON dbo.EmployeeDemographic.EmployeeID = dbo.EmployeeSalary.EmployeeID
+
+NOTE; AS SalaryAfaterRaise named the new column created with the new salary calculation.
+
+HAVING CLAUSE
+To be able to pull out JobTitle with more than one empoyee, we need to use HAVING CLAUSE. But first, we have to group by job title.
+
+SELECT JobTitle, count(JobTitle)
+FROM dbo.EmployeeDemographic
+JOIN dbo.EmployeeSalary
+ON dbo.EmployeeDemographic.EmployeeID = dbo.EmployeeSalary.EmployeeID
+GROUP BY JobTitle
+HAVING count(JobTitle)>1
+
+SECOND USE CASE
+
+SELECT JobTitle, count(Salary)
+FROM dbo.EmployeeDemographic
+JOIN dbo.EmployeeSalary
+ON dbo.EmployeeDemographic.EmployeeID = dbo.EmployeeSalary.EmployeeID
+GROUP BY JobTitle
+HAVING AVG(Salary)>45000
+ODER BY AVG(Salary)
+
+UPDATING AND DELETING DATA IN A TABLE
+
+1, select the table you will want to update or delete
+
+2, write update, followed by the table
+
+3, SET (Set call out the column you want to put the information) followed by the column name = what you want to update. for example EmployeeID=1200
+
+4, If you dont specify, is going to set every EmployeeID to 1200. because we havn't specify that, we want only Fistname (Holy fax) row to be updated. Thats when WHERE CLAUSE  comes in. WWHERE, followed by the known row. example WHERE FirstName = 'Holy' AND LastName= Flax
+
+SELECT dbo.EmployeeDemographic
+UPDATE dbo.employeeDemographic
+SET EmployeeID =1200
+WHERE FirstName= 'Hloy' And LastName= 'Flax'
+
+MULTIPLE UPDATES
+
+SELECT dbo.EmployeeDemographic
+UPDATE dbo.employeeDemographic
+SET EmployeeID =1200, Age = 31, Gender='Female'
+WHERE FirstName= 'Hloy' And LastName= 'Flax'
+
+
+DELETE STATMENT
+Delete statement will remove the entire row from our table
+
+SELECT*
+DELETE 
+FROM dbo.EmployeeDemographic
+WHERE EmployeeID=1005
+
+ALIASING IN COLUMN NAMES
+IT is temporary chanaging your cuolumn name or your tabl name
+
+For example , Naming column (FirstName) as Fname is
+
+select FirstName AS Fname
+From dbo.EmployeeDemographic
+(This temporary name the column Fname)
+
+COMBING TWO COLUMN . FOR EXAMPLE FIRSTNAME AND LASTNAME AS FULLNAME
+
+SELECT FirstName + ' ' + LastName AS FullName
+
+
+SCOND EXAMPLE.
+
+SELECT AVG(Age) AS AVGAGE
+FROM dbo.EmployeeDemographic
+
+The new column average age will be name AVGAGE
+
+ALAISING IN TABLE NAMES
+
+SELECT Demo.EmployeeID, Sal.Salary
+FROM dbo.EmployeeDemographic AS Demo
+JOIN dbo.EmployeeSalary AS Sal
+ON Demo.EmployeeID=Sal.EmployeeID
+
+(This name the tables as sal and Demo respectivly)
+
+Lets look at example of joining 3 seperate tables
+
+SELECT Demo.EmployeeID, Demo.FirstName, Demo. LastName Sal.JobTitle, were.Age
+FROM dbo.EmployeeDemographic AS Demo
+LEFT JOIN dbo.EmployeeSalary AS Sal
+ON Demo.EmplyeeID=SAL.EmployeeID
+LEFTJOIN dbo.WereHouseEmployeeDemographics AS were
+ON Demo.EmployeeID=were.EmployeeID
+
+Renaming the tables AS Sal, Demo and Were , avoid repetions of long names of the table and saves time.
+it also becomes cleaner. This does not change the name of the tables permenently.
+
+
+PARTITION BY
+
+For example, if you want t0 know the number of male and females employee you have in a company
+
+It is better to use partition by, because it brings out the other informations like EmployeeID and their names plus the informantion you want. which is Count Gender. Group by on the other hand can count the gender but it will only pull out the Gender column and the count but but not the other information
+This is why  partitioning is usefull
+
+SELECT FirstName, LastName, Gender, Salary, count(Gender)
+OVER(PARTITION BY Gender) AS TotalGender
+FROM dbo.EmployeeDemographic AS Demo
+JOIN dbo.EmployeeSalary AS Sal
+ON Demo.EmplyeeID=SAL.EmployeeID
+
+
+CTE
+It help put your queries in a temporary place. Like creating a temporary table for use now. 
+
+WITH CTE_Employee AS 
+(SELECT FirstName, LastName, Gender,Salary, count(Gender) OVER (PARTITION BY Gender) AS TotalGender,
+ AVG(Salary) Over (PARTITION BY Salary) AS AVGSalary
+FROM dbo.EmployeeDemographic AS Demo
+JOIN dbo.EmployeeSalary AS Sal
+ON Demo.EmplyeeID=SAL.EmployeeID
+Where Salary>'4500' )
+
+Now we can pull out from the CTE_Employee table. note, it can only work when you run everything together
+
+WITH CTE_Employee AS 
+(SELECT FirstName, LastName, Gender,Salary, count(Gender) OVER (PARTITION BY Gender) AS TotalGender,
+ AVG(Salary) Over (PARTITION BY Salary) AS AVGSalary
+FROM dbo.EmployeeDemographic AS Demo
+JOIN dbo.EmployeeSalary AS Sal
+ON Demo.EmplyeeID=SAL.EmployeeID
+Where Salary>'4500' )
+
+SELECT*
+FROM CTE_Employee
+
+OR
+
+WITH CTE_Employee AS 
+(SELECT FirstName, LastName, Gender,Salary, count(Gender) OVER (PARTITION BY Gender) AS TotalGender,
+ AVG(Salary) Over (PARTITION BY Salary) AS AVGSalary
+FROM dbo.EmployeeDemographic AS Demo
+JOIN dbo.EmployeeSalary AS Sal
+ON Demo.EmplyeeID=SAL.EmployeeID
+Where Salary>'4500' )
+
+SELECT FirstName, TotalGender, AVGSalary 
+FROM CTE_Employee
+ ALWAYS RUN IT TOGHETHER WITH THE CTE
+
+
+
+
+
+
+TEMP TABLE( TEMPORARY TABLE)
+
+Create table #temp_employee2 (
+EmployeeID int,
+JobTitle varchar(100),
+Salary int
+)
+
+--THIS CREATE A TEMPORARY TABLE CALLED #temp_employee2
+
+
+Select * From #temp_employee2
+
+Insert into #temp_employee2 values (
+'1001', 'HR', '45000'
+)
+THIS INSERT VALUES INTO THE TEMP TABLE THAT WAS CREATED
+
+
+
+Insert into #temp_employee2 
+SELECT * From SQLTutorial..EmployeeSalary
+
+THIS INSERT WHOLE DIFFERENT TABLE INTO THE TEMP TABE WE CREATED (#temp_table)
+
+
+Select * From #temp_employee2
+THIS QUERY SHOWS YOU THE CONTENT OF THE CREATED TEMPORAL TABLE
+
+
+
+
+THE TEMP TABE LIVE SOMEWHERE. NOT IN THE DATABASE. 
+
+
+
+/*
+
+Today's Topic: String Functions - TRIM, LTRIM, RTRIM, Replace, Substring, Upper, Lower
+
+*/
+
+--Drop Table EmployeeErrors;
+
+
+CREATE TABLE EmployeeErrors (
+EmployeeID varchar(50)
+,FirstName varchar(50)
+,LastName varchar(50)
+)
+
+Insert into EmployeeErrors Values 
+('1001  ', 'Jimbo', 'Halbert')
+,('  1002', 'Pamela', 'Beasely')
+,('1005', 'TOby', 'Flenderson - Fired')
+
+Select *
+From EmployeeErrors
+
+-- Using Trim, LTRIM, RTRIM
+
+Select EmployeeID, TRIM(employeeID) AS IDTRIM
+FROM EmployeeErrors 
+
+The trim get rid of blanc spaces on either the front or the back or the left and right side on both sid
+
+
+
+
+
+Select EmployeeID, RTRIM(employeeID) as IDRTRIM
+FROM EmployeeErrors 
+
+Select EmployeeID, LTRIM(employeeID) as IDLTRIM
+FROM EmployeeErrors 
+
+	
+
+
+
+-- Using Replace
+
+Select LastName, REPLACE(LastName, '- Fired', '') as LastNameFixed
+FROM EmployeeErrors
+
+
+-- Using Substring
+
+Select Substring(err.FirstName,1,3), Substring(dem.FirstName,1,3), Substring(err.LastName,1,3), Substring(dem.LastName,1,3)
+FROM EmployeeErrors err
+JOIN EmployeeDemographics dem
+	on Substring(err.FirstName,1,3) = Substring(dem.FirstName,1,3)
+	and Substring(err.LastName,1,3) = Substring(dem.LastName,1,3)
+
+
+
+-- Using UPPER and lower
+
+Select firstname, LOWER(firstname)
+from EmployeeErrors
+
+Select Firstname, UPPER(FirstName)
+from EmployeeErrors
+DROP TABLE IF EXISTS #temp_employee3
+Create table #temp_employee3 (
+JobTitle varchar(100),
+EmployeesPerJob int ,
+AvgAge int,
+AvgSalary int
+)
+
+
+Insert into #temp_employee3
+SELECT JobTitle, Count(JobTitle), Avg(Age), AVG(salary)
+FROM SQLTutorial..EmployeeDemographics emp
+JOIN SQLTutorial..EmployeeSalary sal
+	ON emp.EmployeeID = sal.EmployeeID
+group by JobTitle
+
+Select * 
+From #temp_employee3
+
+SELECT AvgAge * AvgSalary
+from #temp_employee3
+
+
+
+
+
+
+
+
+
+
+
+
+
